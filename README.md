@@ -1,86 +1,64 @@
 # Joana Souto — Portfólio
 
-Portfólio interativo com estética retro pixel-art inspirada em sistemas operacionais clássicos (Windows 98), desenvolvido com **Next.js 16 (App Router)**, **React 19** e **Tailwind CSS 4**.
+Portfólio pessoal e laboratório criativo, desenvolvido para apresentar meus projetos, experiências e interesses nas áreas de tecnologia, design e saúde.
 
----
+O projeto combina desenvolvimento web com uma identidade visual inspirada em Windows 98, interfaces de sistemas operacionais clássicos e jogos antigos, fazendo o uso de pixel arte para todos os elementos gráficos e ilustrações.
 
-## 💻 Recursos e Tecnologias
+## ✦ Sobre o projeto
 
-- **Framework:** [Next.js](https://nextjs.org/) (App Router)
-- **Biblioteca de UI:** [React](https://react.dev/)
-- **Estilização:** [Tailwind CSS v4](https://tailwindcss.com/)
-- **Ícones:** [Lucide React](https://lucide.dev/)
-- **Áudio:** Sintetizador Chiptune local em tempo real utilizando a Web Audio API (sem dependências externas)
-- **Animações:** Web Animations API com suporte nativo a `prefers-reduced-motion`
-- **Internacionalização:** Suporte bilíngue (Português / Inglês)
-- **SEO & Performance:** Metadados estruturados JSON-LD, Open Graph, Sitemap e Robots configurados
+Este portfólio foi desenvolvido do zero como um projeto autoral, envolvendo decisões de:
 
----
+- arquitetura e desenvolvimento da aplicação;
+- design de interface e identidade visual;
+- ilustração e criação de elementos gráficos;
+- desenvolvimento responsivo;
+- acessibilidade e redução de movimento;
+- internacionalização Português / Inglês;
+- otimização para mecanismos de busca e compartilhamento;
+- interação e animações inspiradas em interfaces retrô.
 
-## 🚀 Como Executar Localmente
+## ✦ Tecnologias & Ferramentas
 
-### Pré-requisitos
-- **Node.js**: versão 20 ou superior
-- **pnpm**: versão 9 ou superior (ou npm / yarn)
+### Desenvolvimento
 
-### Passo a passo
+- **Next.js**
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
+- **Lucide React**
+- **Web Audio API**
+- **Web Animations API**
 
-1. Instale as dependências:
-   ```bash
-   pnpm install
-   ```
+### Design & Arte
 
-2. Inicie o servidor de desenvolvimento:
-   ```bash
-   pnpm dev
-   ```
+- **Figma** — prototipação e planejamento de interfaces
+- **Adobe Illustrator** — criação e edição de elementos vetoriais
+- **Clip Studio Paint** — ilustração e criação de elementos gráficos
+- **Pixelorama** — criação e edição de pixel art
 
-3. Abra no navegador:
-   ```
-   http://localhost:3000
-   ```
+Também foram utilizados recursos como metadados estruturados, Open Graph, Sitemap e configurações de acessibilidade.
 
----
+## ✦ Direção visual
 
-## 📦 Build e Produção
+A interface utiliza uma estética inspirada em computadores e sistemas operacionais clássicos, com:
 
-Para gerar e testar a versão otimizada de produção:
+- janelas e componentes inspirados em interfaces retrô;
+- pixel art;
+- ícones e elementos gráficos autorais;
+- animações e interações;
+- referências visuais aos computadores dos anos 1990.
 
-```bash
-pnpm build
-pnpm start
-```
+O objetivo não é apenas reproduzir uma interface antiga, mas reinterpretar essa linguagem visual dentro de uma aplicação web moderna.
 
----
+## ✦ Portfólio
 
-## 🛠️ Estrutura do Projeto
+**A versão publicada deste projeto:**
+[em breve]
 
-```text
-├── app/
-│   ├── about-space.tsx        # Seção Sobre Mim (experiência, formação e skills)
-│   ├── content.ts             # Textos em Português e Inglês
-│   ├── desktop.tsx            # Ambiente principal (janelas, barra de tarefas e player)
-│   ├── home-space.tsx         # Seção inicial / Apresentação
-│   ├── image-window.tsx       # Visualizador de imagens em janela flutuante
-│   ├── layout.tsx             # Layout raiz da aplicação
-│   ├── profile-data.ts        # Dados profissionais, contatos e links
-│   ├── project-explorer.tsx   # Explorador de projetos e detalhes
-│   ├── projects.ts            # Lista de projetos, imagens e ferramentas
-│   ├── seo.ts                 # Configurações de SEO e Schema.org
-│   └── window-state.ts        # Gerenciamento de estado das janelas
-├── components/
-│   └── ui/                    # Componentes de interface reutilizáveis
-└── public/                    # Imagens, ilustrações e assets estáticos
-```
+## ✦ Autoria
 
----
+Projeto autoral desenvolvido por **Joana Souto**.
 
-## 🎨 Personalização
+O código-fonte está disponível neste repositório para fins de demonstração profissional e acadêmica. **Design, identidade visual, ilustrações, textos e demais elementos autorais deste portfólio não são disponibilizados para reutilização ou redistribuição sem autorização.**
 
-- **Dados e Contatos:** Edite `app/profile-data.ts` para atualizar nome, e-mail, LinkedIn, GitHub e domínio do site.
-- **Projetos:** Atualize `app/projects.ts` adicionando seus projetos reais, links e capturas de tela em `public/`.
-- **Textos e Traduções:** Altere as cópias em PT/EN diretamente em `app/content.ts`.
-
----
-
-Desenvolvido por **Joana Souto** · Garanhuns, PE, Brasil.
+© 2026 Joana Souto. Todos os direitos reservados.
