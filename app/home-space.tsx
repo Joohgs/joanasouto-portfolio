@@ -137,8 +137,8 @@ export function HomeSpace({
             src="/hero.webp"
             alt={
               lang === "pt"
-                ? "Joana flutuando com seu notebook"
-                : "Joana floating with her laptop"
+                ? "Garota flutuando com seu notebook"
+                : "Girl floating with her laptop"
             }
             className="absolute inset-0 h-full w-full object-contain px-[8%] pb-5 [image-rendering:pixelated] drop-shadow-[0_14px_30px_#0d20555c]"
           />
