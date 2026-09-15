@@ -2,7 +2,7 @@
 
 Portfólio pessoal e laboratório criativo, desenvolvido para apresentar meus projetos, experiências e interesses nas áreas de tecnologia, design e saúde.
 
-O projeto combina desenvolvimento web com uma identidade visual inspirada em Windows 98, interfaces de sistemas operacionais clássicos e jogos antigos, fazendo o uso de pixel arte para todos os elementos gráficos e ilustrações.
+O projeto combina desenvolvimento web com uma identidade visual inspirada no Windows 98, interfaces de sistemas operacionais clássicos e jogos antigos, fazendo o uso de pixel arte para todos os elementos gráficos e ilustrações.
 
 ## ✦ Sobre o projeto
 

@@ -1,6 +1,13 @@
 "use client";
 import { useCallback, useRef } from "react";
-import { Folder, X, Minus, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Folder,
+  X,
+  Minus,
+  Square,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,6 +16,8 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { projects } from "./projects";
+const bevel =
+  "border-2 border-t-[#747474] border-l-[#747474] border-r-black border-b-black shadow-[1px_1px_0_#101010]";
 export function ProjectWindow({
   selected,
   minimized,
@@ -78,17 +87,23 @@ export function ProjectWindow({
                   aria-label={
                     lang === "pt" ? "Minimizar projeto" : "Minimize project"
                   }
-                  className="flex size-6 items-center justify-center border-2 border-t-white border-l-white border-r-[#444] border-b-[#444] bg-[#c7c7c7] text-black"
+                  className={`${bevel} flex size-6 items-center justify-center bg-[#161616] hover:bg-[#242424] text-white active:translate-y-px cursor-pointer`}
                 >
-                  <Minus size={15} />
+                  <Minus size={14} />
                 </button>
+                <span
+                  aria-hidden
+                  className={`${bevel} flex size-6 items-center justify-center bg-[#161616] text-white opacity-65 cursor-not-allowed`}
+                >
+                  <Square size={14} />
+                </span>
                 <DialogClose
                   aria-label={
                     lang === "pt" ? "Fechar projeto" : "Close project"
                   }
-                  className="flex size-6 items-center justify-center border-2 border-t-white border-l-white border-r-[#444] border-b-[#444] bg-[#c7c7c7] text-black focus-visible:outline-2 focus-visible:outline-white"
+                  className="border-2 border-t-[#ff7fff] border-l-[#ff7fff] border-r-[#5f036a] border-b-[#5f036a] shadow-[1px_1px_0_#101010] flex size-6 items-center justify-center bg-[#eb0083] hover:bg-[#ff279f] text-white active:translate-y-px cursor-pointer focus-visible:outline-2 focus-visible:outline-white"
                 >
-                  <X size={15} />
+                  <X size={14} />
                 </DialogClose>
               </div>
             </div>
@@ -170,7 +185,7 @@ export function ProjectWindow({
                     lang === "pt" ? "Projeto anterior" : "Previous project"
                   }
                   onClick={() => onSelect((selected! + 2) % 3)}
-                  className="border border-[#777] p-1"
+                  className={`${bevel} bg-[#161616] hover:bg-[#242424] p-1 text-white active:translate-y-px`}
                 >
                   <ChevronLeft size={18} />
                 </button>
@@ -179,11 +194,13 @@ export function ProjectWindow({
                     lang === "pt" ? "Próximo projeto" : "Next project"
                   }
                   onClick={() => onSelect((selected! + 1) % 3)}
-                  className="border border-[#777] p-1"
+                  className={`${bevel} bg-[#161616] hover:bg-[#242424] p-1 text-white active:translate-y-px`}
                 >
                   <ChevronRight size={18} />
                 </button>
-                <DialogClose className="border-2 border-t-white border-l-white border-r-[#444] border-b-[#444] px-3 py-1">
+                <DialogClose
+                  className={`${bevel} bg-[#161616] hover:bg-[#242424] px-3 py-1 text-white active:translate-y-px`}
+                >
                   {lang === "pt" ? "Fechar" : "Close"}
                 </DialogClose>
               </div>

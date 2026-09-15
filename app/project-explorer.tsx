@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { projects } from "./projects";
 import { profile } from "./profile-data";
+const bevel =
+  "border-2 border-t-[#747474] border-l-[#747474] border-r-black border-b-black shadow-[1px_1px_0_#101010]";
 export function ProjectDetails({
   index,
   lang,
@@ -93,7 +95,7 @@ export function ProjectDetails({
             href={project.url || `/project?project=${index}&lang=${lang}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-7 inline-flex items-center gap-3 border-2 border-t-white border-l-white border-r-[#444] border-b-[#444] bg-[#c7c7c7] px-4 py-3 text-sm font-bold text-[#18264e] focus-visible:outline-2 focus-visible:outline-[#000080]"
+            className={`${bevel} mt-7 inline-flex items-center gap-3 bg-[#161616] hover:bg-[#242424] px-4 py-3 text-sm font-bold text-white focus-visible:outline-2 focus-visible:outline-[#000080] active:translate-y-px`}
           >
             {project.url
               ? lang === "pt"
