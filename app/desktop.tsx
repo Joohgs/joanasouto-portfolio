@@ -8,12 +8,9 @@ import {
   useCallback,
 } from "react";
 import {
-  Monitor,
-  Folder,
-  Heart,
-  Mail,
   ChevronRight,
   ChevronLeft,
+  Mail,
   Play,
   Pause,
   SkipForward,
@@ -28,6 +25,7 @@ import { copy } from "./content";
 import { HomeSpace } from "./home-space";
 import { ProjectExplorer } from "./project-explorer";
 import { ImageWindow } from "./image-window";
+import { LottieIcon } from "@/components/LottieIcon";
 import { imageWindowReducer } from "./window-state";
 import { animateWindow, windowOffset } from "./window-animation";
 import { projects } from "./projects";
@@ -39,7 +37,18 @@ const bevel =
   "border-2 border-t-[#747474] border-l-[#747474] border-r-black border-b-black shadow-[1px_1px_0_#101010]";
 const pressed =
   "border-2 border-t-black border-l-black border-r-[#747474] border-b-[#747474]";
-const icons = [Monitor, Folder, Heart, Mail];
+const desktopIcons = [
+  "/home.webp",
+  "/projects.webp",
+  "/about_me.webp",
+  "/contact_me.webp",
+];
+const navAnimations = [
+  "/animations/home.lottie",
+  "/animations/Projects.lottie",
+  "/animations/about_me.lottie",
+  "/animations/contact_me.lottie",
+];
 
 function WinButton({
   children,
@@ -83,10 +92,7 @@ function MarqueeText({
 
     const check = () => {
       if (el.clientWidth === 0) return;
-      const textWidth = Math.max(
-        txt.scrollWidth,
-        txt.getBoundingClientRect().width,
-      );
+      const textWidth = txt.offsetWidth || txt.scrollWidth;
       setOverflows(textWidth > el.clientWidth);
     };
 
@@ -111,15 +117,23 @@ function MarqueeText({
       ref={containerRef}
       className={`relative flex w-full min-w-0 items-center overflow-hidden whitespace-nowrap ${className}`}
     >
+      {/* Off-screen measurement span that never affects container layout */}
+      <span
+        ref={textRef}
+        aria-hidden="true"
+        className="invisible absolute left-0 top-0 whitespace-nowrap pointer-events-none"
+      >
+        {text}
+      </span>
       <span
         className={
           overflows
             ? "inline-flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:animate-none"
-            : "inline-block"
+            : "inline-block truncate"
         }
       >
         <span className={overflows ? "inline-block pr-8" : "inline-block"}>
-          <span ref={textRef}>{text}</span>
+          {text}
         </span>
         {overflows && (
           <span aria-hidden="true" className="inline-block pr-8">
@@ -354,6 +368,7 @@ export default function Desktop({
     [repeat, setRepeat] = useState(true),
     [currentPlaylist, setCurrentPlaylist] = useState<Track[]>(playlist),
     [time, setTime] = useState("00:00");
+  const [hoveredNav, setHoveredNav] = useState<number | null>(null);
   const [imageWindows, dispatchWindow] = useReducer(imageWindowReducer, []);
   const visibleWindows = imageWindows
     .filter((window) => !window.minimized)
@@ -502,23 +517,39 @@ export default function Desktop({
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const animations: Animation[] = [];
-    frame.current?.querySelectorAll("[data-float]").forEach((el, i) => {
-      animations.push(
-        el.animate(
-          [
-            { transform: "translateY(0px)" },
-            { transform: `translateY(-${i === 0 ? 18 : 10}px)` },
-            { transform: "translateY(0px)" },
-          ],
-          {
-            duration: 4700 + i * 510,
-            iterations: Infinity,
-            easing: "ease-in-out",
-            delay: i * 270,
-          },
-        ),
-      );
-    });
+    frame.current
+      ?.querySelectorAll<HTMLElement>("[data-float]")
+      .forEach((el, i) => {
+        const customDir = el.getAttribute("data-float");
+        const customDelay = el.getAttribute("data-float-delay");
+        const isDown =
+          customDir === "down" ||
+          (customDir !== "up" && i % 2 === 0 && i !== 0);
+        const distance = i === 0 ? 18 : 12;
+        const targetY = isDown ? distance : -distance;
+        const delay =
+          customDelay !== null && customDelay !== ""
+            ? Number(customDelay)
+            : i === 0
+              ? 0
+              : (i - 1) * 450;
+
+        animations.push(
+          el.animate(
+            [
+              { transform: "translateY(0px)" },
+              { transform: `translateY(${targetY}px)` },
+              { transform: "translateY(0px)" },
+            ],
+            {
+              duration: 4600 + (i % 2) * 400,
+              iterations: Infinity,
+              easing: "ease-in-out",
+              delay,
+            },
+          ),
+        );
+      });
     return () => animations.forEach((a) => a.cancel());
   }, [active]);
   useEffect(
@@ -694,35 +725,209 @@ export default function Desktop({
         <source src="/background.webm" type="video/webm" />
       </video>
       <header className="relative flex h-16 shrink-0 items-center justify-end gap-4 px-4 text-xs text-white/90 sm:px-7">
-        <span className="flex items-center gap-2">
+        <div className="group flex gap-3 bg-[#000054] border border-solid border-[#474784] px-2 py-1">
           <svg
-            width="24"
-            height="24"
-            viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            fill="CurrentColor"
+            viewBox="0 0 32 32"
+            id="Interface-Essential-Translate--Streamline-Pixel"
+            height="20"
+            width="20"
           >
-            <rect x="0" fill="none" width="20" height="20" />
+            <desc>
+              Interface Essential Translate Streamline Icon:
+              https://streamlinehq.com
+            </desc>
             <g>
-              <path d="M11 7H9.49c-.63 0-1.25.3-1.59.7L7 5H4.13l-2.39 7h1.69l.74-2H7v4H2c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h7c1.1 0 2 .9 2 2v2zM6.51 9H4.49l1-2.93zM10 8h7c1.1 0 2 .9 2 2v7c0 1.1-.9 2-2 2h-7c-1.1 0-2-.9-2-2v-7c0-1.1.9-2 2-2zm7.25 5v-1.08h-3.17V9.75h-1.16v2.17H9.75V13h1.28c.11.85.56 1.85 1.28 2.62-.87.36-1.89.62-2.31.62-.01.02.22.97.2 1.46.84 0 2.21-.5 3.28-1.15 1.09.65 2.48 1.15 3.34 1.15-.02-.49.2-1.44.2-1.46-.43 0-1.49-.27-2.38-.63.7-.77 1.14-1.77 1.25-2.61h1.36zm-3.81 1.93c-.5-.46-.85-1.13-1.01-1.93h2.09c-.17.8-.51 1.47-1 1.93l-.04.03s-.03-.02-.04-.03z" />
+              <path
+                d="M30.47 18.29H32v10.66h-1.53Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M28.95 28.95h1.52v1.53h-1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M28.95 16.76h1.52v1.53h-1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M28.95 7.62h1.52v4.57h-1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M27.42 6.09h1.53v1.53h-1.53Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M18.28 30.48h10.67V32H18.28Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="m25.9 24.38 -4.57 0 0 -4.57 -1.53 0 0 9.14 1.53 0 0 -3.05 4.57 0 0 3.05 1.52 0 0 -9.14 -1.52 0 0 4.57z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M21.33 18.29h4.57v1.52h-4.57Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M18.28 15.24h10.67v1.52H18.28Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="m21.33 1.52 0 1.53 -1.53 0 0 1.52 -1.52 0 0 1.52 1.52 0 0 1.53 1.53 0 0 1.52 1.52 0 0 -3.05 4.57 0 0 -1.52 -4.57 0 0 -3.05 -1.52 0z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M16.76 28.95h1.52v1.53h-1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M16.76 16.76h1.52v1.53h-1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M15.23 18.29h1.53v10.66h-1.53Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M15.23 3.05h1.53v10.66h-1.53Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M13.71 13.71h1.52v1.53h-1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M13.71 1.52h1.52v1.53h-1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="m10.66 7.62 1.53 0 0 -1.53 1.52 0 0 -1.52 -4.57 0 0 -1.52 -1.53 0 0 1.52 -4.57 0 0 1.52 7.62 0 0 1.53z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="m10.66 30.48 0 -1.53 1.53 0 0 -1.52 1.52 0 0 -1.53 -1.52 0 0 -1.52 -1.53 0 0 -1.52 -1.52 0 0 3.04 -4.57 0 0 1.53 4.57 0 0 3.05 1.52 0z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M3.04 15.24h10.67v1.52H3.04Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M10.66 12.19h1.53v1.52h-1.53Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M9.14 10.67h1.52v1.52H9.14Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M9.14 7.62h1.52v1.52H9.14Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M7.61 9.14h1.53v1.53H7.61Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M6.09 10.67h1.52v1.52H6.09Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M6.09 7.62h1.52v1.52H6.09Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M4.57 12.19h1.52v1.52H4.57Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M3.04 0h10.67v1.52H3.04Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M3.04 24.38h1.53v1.52H3.04Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M1.52 19.81h1.52v4.57H1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M1.52 13.71h1.52v1.53H1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M1.52 1.52h1.52v1.53H1.52Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
+              <path
+                d="M0 3.05h1.52v10.66H0Z"
+                fill="CurrentColor"
+                strokeWidth="1"
+              ></path>
             </g>
           </svg>
-        </span>
-        <div className="flex gap-1">
+
           <a
             href={active === 0 ? "/" : `/?section=${sectionNames[active]}`}
             aria-current={lang === "pt" ? "page" : undefined}
-            className={`px-2 py-1 ${lang === "pt" ? "bg-white text-[#000080]" : "text-white"}`}
+            className={`group/pt flex items-center gap-1.5 text-white text-xs ${lang === "pt" ? "pointer-events-none cursor-default" : ""}`}
           >
-            PT
+            <span
+              className={`size-2 shrink-0 transition-all duration-300 ${
+                lang === "pt"
+                  ? "bg-[#f1fa8c] shadow-[0_0_4px_#f1fa8c] group-hover:bg-[#c8c97f] group-hover:shadow-none"
+                  : "bg-[#444] group-hover/pt:bg-[#a1a75c] group-hover/pt:shadow-[0_0_4px_#f1fa8c]"
+              }`}
+            />
+            <span className="">PT</span>
           </a>
-          <span className="py-1">/</span>
           <a
             href={active === 0 ? "/en" : `/en?section=${sectionNames[active]}`}
             aria-current={lang === "en" ? "page" : undefined}
-            className={`px-2 py-1 ${lang === "en" ? "bg-white text-[#000080]" : "text-white"}`}
+            className={`group/en flex items-center gap-1.5 text-white text-xs ${lang === "en" ? "pointer-events-none cursor-default" : ""}`}
           >
-            EN
+            <span
+              className={`size-2 shrink-0 transition-all duration-300 ${
+                lang === "en"
+                  ? "bg-[#f1fa8c] shadow-[0_0_4px_#f1fa8c] group-hover:bg-[#c8c97f] group-hover:shadow-none"
+                  : "bg-[#444] group-hover/en:bg-[#a1a75c] group-hover/en:shadow-[0_0_4px_#f1fa8c]"
+              }`}
+            />
+            <span className="">EN</span>
           </a>
         </div>
       </header>
@@ -732,23 +937,25 @@ export default function Desktop({
           className="hidden w-24 shrink-0 flex-col gap-7 pt-12 sm:flex"
         >
           {t.nav.map((name, i) => {
-            const Icon = icons[i];
             return (
               <a
                 href={`${lang === "en" ? "/en" : "/"}${i === 0 ? "" : `?section=${sectionNames[i]}`}`}
                 key={i}
                 aria-current={active === i ? "page" : undefined}
+                onMouseEnter={() => setHoveredNav(i)}
+                onMouseLeave={() => setHoveredNav(null)}
                 onClick={(event) => {
                   event.preventDefault();
                   change(i);
                 }}
                 className={`group flex flex-col items-center gap-2 p-2 text-sm text-white ${active === i ? "bg-[#000080]/55 outline-1 outline-dotted outline-white" : "hover:bg-white/10"}`}
               >
-                <Icon
-                  size={37}
-                  strokeWidth={1.7}
+                <LottieIcon
+                  src={navAnimations[i]}
+                  size={54}
+                  isActive={active === i}
+                  isHovered={hoveredNav === i}
                   className="drop-shadow-[2px_2px_0_#092b66]"
-                  fill={i === 1 ? "#f9d576" : i === 2 ? "#65bdff" : "#aed5ed"}
                 />
                 <span className="text-center leading-tight">{name}</span>
               </a>
@@ -764,10 +971,14 @@ export default function Desktop({
             className={`${active === 0 ? "hidden" : "flex"} h-8 shrink-0 items-center justify-between bg-linear-to-r from-[#000080] to-[#1e69b7] px-2 text-sm font-bold text-white`}
           >
             <span className="flex items-center gap-2">
-              {(() => {
-                const Icon = icons[active];
-                return <Icon size={17} />;
-              })()}{" "}
+              <img
+                src={desktopIcons[active]}
+                alt=""
+                aria-hidden="true"
+                width={18}
+                height={18}
+                className="size-4.5 object-contain "
+              />{" "}
               {t.nav[active]}.exe
             </span>
             <div className="flex gap-1">
@@ -803,13 +1014,47 @@ export default function Desktop({
           </div>
           <div
             ref={active === 0 ? undefined : content}
-            className={`relative min-h-0 flex-1 ${active === 0 ? " bg-transparent" : "overflow-y-auto overscroll-contain bg-[#f4f3ef]"}`}
+            className={`relative min-h-0 min-w-0 flex-1 ${active === 0 ? " bg-transparent" : "overflow-y-auto overscroll-contain bg-[#f4f3ef]"}`}
           >
             {active === 0 && (
               <HomeSpace
                 lang={lang}
                 scrollRef={content}
                 onProjects={() => change(1)}
+                footer={
+                  <footer className="flex h-9 min-w-0 w-full shrink-0 items-center justify-between gap-2 pt-1 text-xs text-[#c8dbff]">
+                    <span
+                      className={`${pressed} px-2 flex h-full min-w-0 flex-1 items-center overflow-hidden`}
+                    >
+                      <span className="hidden lg:inline truncate">
+                        {t.scroll}
+                      </span>
+                      <MarqueeText
+                        text={t.scrollMobile}
+                        className="lg:hidden"
+                      />
+                    </span>
+                    <div
+                      className={`${pressed} flex h-full items-center gap-3 px-2`}
+                    >
+                      <button
+                        aria-label="Previous"
+                        disabled
+                        className={`${bevel} cursor-pointer flex h-6 w-6 items-center justify-center bg-[#161616] hover:bg-[#242424] text-white active:translate-y-px disabled:opacity-30 disabled:hover:bg-[#161616] disabled:cursor-not-allowed disabled:active:translate-y-0`}
+                      >
+                        <ChevronLeft size={16} />
+                      </button>
+                      <span className="font-mono text-white">01 / 04</span>
+                      <button
+                        aria-label="Next"
+                        onClick={() => change(1)}
+                        className={`${bevel} cursor-pointer flex h-6 w-6 items-center justify-center bg-[#161616] hover:bg-[#242424] text-white active:translate-y-px disabled:opacity-30 disabled:hover:bg-[#161616] disabled:cursor-not-allowed disabled:active:translate-y-0`}
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </div>
+                  </footer>
+                }
               />
             )}
             {active === 1 && (
@@ -870,48 +1115,34 @@ export default function Desktop({
               </div>
             )}
           </div>
-          <footer
-            className={`flex h-9 shrink-0 items-center justify-between gap-2 pt-1 text-xs ${active === 0 ? "mt-4 border-t border-white/20 text-[#c8dbff] bg-[#161616] pb-1" : "text-[#555563]"}`}
-          >
-            {active === 0 && (
-              <span className="ml-2 text-[#f2d893] animate-blink">
-                &nbsp;✦&nbsp;
-              </span>
-            )}
-            <span
-              className={`${active === 0 ? "" : `${pressed} px-2 `} flex h-full min-w-0 flex-1 items-center overflow-hidden`}
-            >
-              {active === 0 ? (
-                <>
-                  <span className="hidden lg:inline truncate">{t.scroll}</span>
-                  <MarqueeText text={t.scrollMobile} className="lg:hidden" />
-                </>
-              ) : (
+          {active !== 0 && (
+            <footer className="flex h-9 shrink-0 items-center justify-between gap-2 pt-1 text-xs text-[#555563]">
+              <span
+                className={`${pressed} px-2 flex h-full min-w-0 flex-1 items-center overflow-hidden`}
+              >
                 <span className="truncate">{t.nav[active]}</span>
-              )}
-            </span>
-            <div
-              className={`${active === 0 ? "" : pressed} flex h-full items-center gap-3 px-2`}
-            >
-              <button
-                aria-label="Previous"
-                disabled={active === 0}
-                onClick={() => change(active - 1)}
-                className={`${bevel} cursor-pointer flex h-6 w-6 items-center justify-center bg-[#161616] hover:bg-[#242424] text-white active:translate-y-px disabled:opacity-30 disabled:hover:bg-[#161616] disabled:cursor-not-allowed disabled:active:translate-y-0`}
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <span>0{active + 1} / 04</span>
-              <button
-                aria-label="Next"
-                disabled={active === 3}
-                onClick={() => change(active + 1)}
-                className={`${bevel} cursor-pointer flex h-6 w-6 items-center justify-center bg-[#161616] hover:bg-[#242424] text-white active:translate-y-px disabled:opacity-30 disabled:hover:bg-[#161616] disabled:cursor-not-allowed disabled:active:translate-y-0`}
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </footer>
+              </span>
+              <div className={`${pressed} flex h-full items-center gap-3 px-2`}>
+                <button
+                  aria-label="Previous"
+                  disabled={active === 0}
+                  onClick={() => change(active - 1)}
+                  className={`${bevel} cursor-pointer flex h-6 w-6 items-center justify-center bg-[#161616] hover:bg-[#242424] text-white active:translate-y-px disabled:opacity-30 disabled:hover:bg-[#161616] disabled:cursor-not-allowed disabled:active:translate-y-0`}
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <span>0{active + 1} / 04</span>
+                <button
+                  aria-label="Next"
+                  disabled={active === 3}
+                  onClick={() => change(active + 1)}
+                  className={`${bevel} cursor-pointer flex h-6 w-6 items-center justify-center bg-[#161616] hover:bg-[#242424] text-white active:translate-y-px disabled:opacity-30 disabled:hover:bg-[#161616] disabled:cursor-not-allowed disabled:active:translate-y-0`}
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </footer>
+          )}
         </section>
       </div>
       {start && (
@@ -923,14 +1154,20 @@ export default function Desktop({
           </div>
           <div>
             {t.nav.map((n, i) => {
-              const Icon = icons[i];
               return (
                 <button
                   key={n}
                   onClick={() => change(i)}
                   className="flex w-52 items-center gap-4 px-5 py-4 text-sm text-white hover:bg-[#242424] cursor-pointer"
                 >
-                  <Icon size={22} />
+                  <img
+                    src={desktopIcons[i]}
+                    alt=""
+                    aria-hidden="true"
+                    width={22}
+                    height={22}
+                    className="size-5.5 object-contain "
+                  />
                   {n}
                 </button>
               );
@@ -978,9 +1215,9 @@ export default function Desktop({
           {/* Main Inner Container */}
           <div className="border-2 border-t-[#24042b] border-l-[#24042b] border-r-[#443e5b] border-b-[#443e5b] bg-[#282a36] p-2 flex flex-col gap-2">
             {/* Upper Section: Left LCD box + Right info/sliders/buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 items-stretch">
+            <div className="flex flex-row gap-2 items-stretch">
               {/* Left Screen: Status, Time and Visualizer */}
-              <div className="w-full sm:w-[165px] shrink-0 h-[84px] bg-[#12131a] border-2 border-t-black border-l-black border-r-[#444] border-b-[#444] p-2 flex flex-col justify-between">
+              <div className="w-auto sm:w-[165px] shrink-0 md:h-[84px] bg-[#12131a] border-2 border-t-black border-l-black border-r-[#444] border-b-[#444] p-2 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     {playing ? (
@@ -1015,7 +1252,7 @@ export default function Desktop({
               </div>
 
               {/* Right Column */}
-              <div className="flex-1 min-w-0 flex flex-col justify-between gap-1.5 h-[84px]">
+              <div className="flex-1 min-w-0 flex flex-col justify-between gap-1.5 md:h-[84px]">
                 {/* Track marquee/title box */}
                 <div
                   className="border border-t-black border-l-black border-r-[#444] border-b-[#444] bg-[#12131a] px-2 py-1 flex items-center overflow-hidden h-7"
@@ -1027,65 +1264,67 @@ export default function Desktop({
                 </div>
 
                 {/* Technical badges & sliders & EQ/PL buttons */}
-                <div className="flex items-end justify-between gap-1.5 pt-0.5">
+                <div className="flex flex-col md:flex-row items-end justify-between gap-1.5 pt-0.5">
                   {/* Volume Slider */}
-                  <div className="flex flex-col gap-0.5 min-w-0">
-                    <div className="flex items-center gap-1">
-                      <span className="bg-black border border-[#333] px-1 text-[9px] text-[#f1fa8c] font-mono leading-tight">
-                        128
-                      </span>
-                      <span className="text-[9px] text-[#8be9fd] font-mono">
-                        Kbps
-                      </span>
+                  <div className="flex flex-row w-full justify-between">
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <span className="bg-black border border-[#333] px-1 text-[9px] text-[#f1fa8c] font-mono leading-tight">
+                          128
+                        </span>
+                        <span className="text-[9px] text-[#8be9fd] font-mono">
+                          Kbps
+                        </span>
+                      </div>
+                      <div className="relative w-16 sm:w-20">
+                        <input
+                          aria-label="Volume"
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.01"
+                          value={volume}
+                          onChange={(e) => {
+                            const val = +e.target.value;
+                            setVolume(val);
+                            if (audio.current) audio.current.volume = val;
+                          }}
+                          className="w-full h-2 bg-[#12131a] appearance-none cursor-pointer border border-t-black border-l-black border-r-[#444] border-b-[#444] focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:bg-[#282a36] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-t-[#747474] [&::-webkit-slider-thumb]:border-l-[#747474] [&::-webkit-slider-thumb]:border-r-black [&::-webkit-slider-thumb]:border-b-black [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:bg-[#282a36] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-t-[#747474] [&::-moz-range-thumb]:border-l-[#747474] [&::-moz-range-thumb]:border-r-black [&::-moz-range-thumb]:border-b-black"
+                          title={`Volume: ${Math.round(volume * 100)}%`}
+                        />
+                      </div>
                     </div>
-                    <div className="relative w-16 sm:w-20">
-                      <input
-                        aria-label="Volume"
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        value={volume}
-                        onChange={(e) => {
-                          const val = +e.target.value;
-                          setVolume(val);
-                          if (audio.current) audio.current.volume = val;
-                        }}
-                        className="w-full h-2 bg-[#12131a] appearance-none cursor-pointer border border-t-black border-l-black border-r-[#444] border-b-[#444] focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:bg-[#282a36] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-t-[#747474] [&::-webkit-slider-thumb]:border-l-[#747474] [&::-webkit-slider-thumb]:border-r-black [&::-webkit-slider-thumb]:border-b-black [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:bg-[#282a36] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-t-[#747474] [&::-moz-range-thumb]:border-l-[#747474] [&::-moz-range-thumb]:border-r-black [&::-moz-range-thumb]:border-b-black"
-                        title={`Volume: ${Math.round(volume * 100)}%`}
-                      />
-                    </div>
-                  </div>
 
-                  {/* Balance / Pan Slider */}
-                  <div className="flex flex-col gap-0.5 min-w-0">
-                    <div className="flex items-center gap-1">
-                      <span className="bg-black border border-[#333] px-1 text-[9px] text-[#f1fa8c] font-mono leading-tight">
-                        48
-                      </span>
-                      <span className="text-[9px] text-[#8be9fd] font-mono">
-                        kHz
-                      </span>
-                    </div>
-                    <div className="relative w-16 sm:w-20">
-                      <input
-                        aria-label="Balance"
-                        type="range"
-                        min="-1"
-                        max="1"
-                        step="0.1"
-                        value={balance}
-                        onChange={(e) => {
-                          const val = +e.target.value;
-                          setBalance(val);
-                          const nodes = getOrCreateAudioNodes(audio.current!);
-                          if (nodes?.panner) {
-                            nodes.panner.pan.value = val;
-                          }
-                        }}
-                        className="w-full h-2 bg-[#12131a] appearance-none cursor-pointer border border-t-black border-l-black border-r-[#444] border-b-[#444] focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:bg-[#282a36] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-t-[#747474] [&::-webkit-slider-thumb]:border-l-[#747474] [&::-webkit-slider-thumb]:border-r-black [&::-webkit-slider-thumb]:border-b-black [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:bg-[#282a36] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-t-[#747474] [&::-moz-range-thumb]:border-l-[#747474] [&::-moz-range-thumb]:border-r-black [&::-moz-range-thumb]:border-b-black"
-                        title={`Balance: ${balance === 0 ? "Center" : balance < 0 ? `L ${Math.round(Math.abs(balance) * 100)}%` : `R ${Math.round(balance * 100)}%`}`}
-                      />
+                    {/* Balance / Pan Slider */}
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <span className="bg-black border border-[#333] px-1 text-[9px] text-[#f1fa8c] font-mono leading-tight">
+                          48
+                        </span>
+                        <span className="text-[9px] text-[#8be9fd] font-mono">
+                          kHz
+                        </span>
+                      </div>
+                      <div className="relative w-16 sm:w-20">
+                        <input
+                          aria-label="Balance"
+                          type="range"
+                          min="-1"
+                          max="1"
+                          step="0.1"
+                          value={balance}
+                          onChange={(e) => {
+                            const val = +e.target.value;
+                            setBalance(val);
+                            const nodes = getOrCreateAudioNodes(audio.current!);
+                            if (nodes?.panner) {
+                              nodes.panner.pan.value = val;
+                            }
+                          }}
+                          className="w-full h-2 bg-[#12131a] appearance-none cursor-pointer border border-t-black border-l-black border-r-[#444] border-b-[#444] focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:bg-[#282a36] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-t-[#747474] [&::-webkit-slider-thumb]:border-l-[#747474] [&::-webkit-slider-thumb]:border-r-black [&::-webkit-slider-thumb]:border-b-black [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:bg-[#282a36] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-t-[#747474] [&::-moz-range-thumb]:border-l-[#747474] [&::-moz-range-thumb]:border-r-black [&::-moz-range-thumb]:border-b-black"
+                          title={`Balance: ${balance === 0 ? "Center" : balance < 0 ? `L ${Math.round(Math.abs(balance) * 100)}%` : `R ${Math.round(balance * 100)}%`}`}
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -1390,7 +1629,6 @@ export default function Desktop({
           className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {t.nav.map((n, i) => {
-            const Icon = icons[i];
             const isCurrent = active === i && !activeImage;
             return (
               <a
@@ -1405,7 +1643,14 @@ export default function Desktop({
                 }}
                 className={`${isCurrent ? pressed : `${bevel} hover:bg-[#242424]`} text-white flex h-9 min-w-9 shrink-0 flex-1 items-center justify-center gap-2 px-2 text-sm sm:max-w-44 sm:justify-start`}
               >
-                <Icon size={17} className="shrink-0" />
+                <img
+                  src={desktopIcons[i]}
+                  alt=""
+                  aria-hidden="true"
+                  width={18}
+                  height={18}
+                  className="size-4.5 shrink-0 object-contain "
+                />
                 <span className="hidden truncate md:block">{n}</span>
               </a>
             );
@@ -1424,9 +1669,20 @@ export default function Desktop({
                 className={`${isCurrent ? pressed : `${bevel} hover:bg-[#242424]`} text-white cursor-pointer flex h-9 min-w-24 shrink-0 flex-1 items-center gap-2 px-2 text-sm sm:max-w-48`}
               >
                 {window.projectIndex !== undefined ? (
-                  <Folder size={16} fill="#f6d279" className="shrink-0" />
+                  <LottieIcon
+                    src="/animations/Projects.lottie"
+                    size={16}
+                    isActive={false}
+                  />
                 ) : (
-                  <Monitor size={16} className="shrink-0" />
+                  <img
+                    src="/home.webp"
+                    alt=""
+                    aria-hidden="true"
+                    width={16}
+                    height={16}
+                    className="size-4 shrink-0 object-contain "
+                  />
                 )}
                 <span className="truncate">{window.title}</span>
               </button>

@@ -2,7 +2,7 @@ export const copy = {
   pt: {
     nav: ["Meu espaço", "Projetos", "Sobre mim", "Contato"],
     welcome: "Olá, mundo!",
-    role: "Desenvolvedora Front-End | UI & Visual Design | Ilustração Digital | Cibersegurança",
+    role: "Desenvolvedora Front-End | UI & Visual Design | Cibersegurança",
     intro:
       "Desenvolvo interfaces para a web e crio sistemas visuais que combinam código, design e ilustração.",
     cta: "Explorar projetos",
@@ -33,14 +33,14 @@ export const copy = {
   en: {
     nav: ["Home", "Projects", "About me", "Contact"],
     welcome: "Hello, world!",
-    role: "Front-End Developer | UI & Visual Design | Digital Illustration | Cybersecurity",
+    role: "Front-End Developer | UI & Visual Design | Cybersecurity",
     intro:
       "I build web interfaces and visual systems that bring code, design and illustration together.",
     cta: "Explore my projects",
     note: "Code, interface and visuals working together.",
     start: "Enter",
-    scroll: "Use your mouse wheel or click the buttons/icons to explore.",
-    scrollMobile: "Swipe or tap the buttons/icons to explore.",
+    scroll: "Use your mouse wheel or click the buttons/icons to explore",
+    scrollMobile: "Swipe or tap the buttons/icons to explore",
     available: "Have a project in mind?",
     about: "Front-end development, interface design and digital illustration.",
     bio: "Lorem ipsum",
