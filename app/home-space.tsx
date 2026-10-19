@@ -71,33 +71,44 @@ export function HomeSpace({
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-col">
       <div className="grid min-h-0 min-w-0 flex-1 gap-5 lg:grid-cols-[1fr_1.08fr]">
-        <div className="relative flex min-h-0 min-w-0 flex-col gap-5">
+        <div className="relative flex min-h-0 min-w-0 flex-col gap-5 pt-8 sm:pt-0">
           {/* Outer Window Container - matching Projetos, Sobre mim, and Contato */}
           <div
             className={`${bevel} flex min-h-0 min-w-0 w-full flex-1 flex-col bg-[#161616] lg:mr-0 mr-0 sm:mr-4 md:mr-12 p-1`}
           >
             {/* Title Bar */}
-            <div className="flex h-9 shrink-0 items-center justify-between bg-linear-to-r from-[#000080] to-[#2855a9] px-2 text-sm font-bold text-white">
-              <span className="flex items-center gap-2 truncate pr-2">
-                <FileText size={16} className="shrink-0 text-[#8be9fd]" />
-                <span className="truncate">CodeStudio.exe</span>
-              </span>
-              <div className="flex gap-1 shrink-0">
-                {[Minus, Square].map((Icon, i) => (
-                  <span
-                    key={i}
-                    aria-hidden
-                    className={`${bevel} flex size-6 items-center justify-center bg-[#161616] text-white opacity-65 cursor-not-allowed`}
-                  >
-                    <Icon size={14} />
-                  </span>
-                ))}
-                <span
-                  aria-hidden
-                  className="border-2 border-t-[#ff7fff] border-l-[#ff7fff] border-r-[#5f036a] border-b-[#5f036a] shadow-[1px_1px_0_#101010] flex size-6 items-center justify-center bg-[#eb0083] text-white opacity-65 cursor-not-allowed"
-                >
-                  <X size={14} />
+            <div className="relative">
+              <img
+                src="/leo.webp"
+                alt={
+                  lang === "pt"
+                    ? "Gatinho laranja dormindo"
+                    : "Orange cat sleeping"
+                }
+                className="sm:hidden absolute z-20 top-[-98px] left-[-4px] h-auto w-auto pointer-events-none select-none"
+              />
+              <div className="flex h-9 shrink-0 items-center justify-between bg-linear-to-r from-[#000080] to-[#2855a9] px-2 text-sm font-bold text-white">
+                <span className="flex items-center gap-2 truncate pr-2">
+                  <FileText size={16} className="shrink-0 text-[#8be9fd]" />
+                  <span className="truncate">CodeStudio.exe</span>
                 </span>
+                <div className="flex gap-1 shrink-0">
+                  {[Minus, Square].map((Icon, i) => (
+                    <span
+                      key={i}
+                      aria-hidden
+                      className={`${bevel} flex size-6 items-center justify-center bg-[#161616] text-white opacity-65 cursor-not-allowed`}
+                    >
+                      <Icon size={14} />
+                    </span>
+                  ))}
+                  <span
+                    aria-hidden
+                    className="border-2 border-t-[#ff7fff] border-l-[#ff7fff] border-r-[#5f036a] border-b-[#5f036a] shadow-[1px_1px_0_#101010] flex size-6 items-center justify-center bg-[#eb0083] text-white opacity-65 cursor-not-allowed"
+                  >
+                    <X size={14} />
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -345,14 +356,6 @@ export function HomeSpace({
               </div>
             </div>
           </div>
-
-          <img
-            src="/leo.webp"
-            alt={
-              lang === "pt" ? "Gatinho laranja dormindo" : "Orange cat sleeping"
-            }
-            className="sm:hidden absolute z-20 bottom-9 right-2 h-auto w-auto pointer-events-none select-none"
-          />
         </div>
 
         {/* Right Desktop Illustration */}
